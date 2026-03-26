@@ -1,0 +1,31 @@
+.error {
+    color: #d32f2f;
+    font-size: 14px;
+    font-weight: 500;
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+
+    &::before {
+        content: '⚠';
+        font-weight: bold;
+    }
+}
+
+.error-input {
+    border-color: #d32f2f !important;
+    background-color: #ffebee;
+
+    &:focus {
+        outline-color: #d32f2f;
+    }
+}
+
+.error-container {
+    padding: 12px;
+    background-color: #ffebee;
+    border-left: 4px solid #d32f2f;
+    border-radius: 4px;
+    margin-bottom: 16px;
+}
