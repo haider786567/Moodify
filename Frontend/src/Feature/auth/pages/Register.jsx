@@ -13,12 +13,12 @@ const Register = () => {
 
     const navigate = useNavigate()
 
-    const { loading, handleRegister,err } = useAuth()
+    const { loading, register,err } = useAuth()
 
     async function handleSubmit(e) {
         e.preventDefault()
 
-        const success = await handleRegister({ username, password, email })
+        const success = await register({ username, password, email })
 
         if (success) {
             navigate('/login')

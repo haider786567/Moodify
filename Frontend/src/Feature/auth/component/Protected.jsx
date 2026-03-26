@@ -1,20 +1,24 @@
-import React from 'react'
-import { useAuth } from '../hook/useAuth'
-import { Navigate } from 'react-router'
+import React from "react"
+import { Navigate } from "react-router"
+import { useSelector } from "react-redux"
 
-function Protected({children}) {
-    const {
-        user,loading
-    } = useAuth()
-    
-    if(loading ){
-        <h1>Loading...</h1>
+    function Protected({ children }) {
+    const { isAuthenticated, loading } = useSelector(
+        (state) => state.auth
+    )
+
+    // ⏳ Wait until auth check finishes
+    if (loading) {
+        return <h1>Loading...</h1>
     }
-    if(!user){
-        return <Navigate to="/login" />
-        
+
+    // ❌ Not logged in → redirect
+    if (!isAuthenticated) {
+        return <Navigate to="/login" replace />
     }
-return children
-}
+
+    // ✅ Logged in → allow access
+    return children
+    }
 
 export default Protected

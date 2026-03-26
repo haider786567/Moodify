@@ -1,17 +1,22 @@
 import React from 'react'
 import { RouterProvider } from "react-router-dom"
 import {router} from "./App.route"
-import { AuthProvider } from "../Feature/auth/auth.context"
-import "../src/Feature/Shared/Styles/global.scss"
+import "../../src/Feature/Shared/Styles/global.scss"
 import { SongContextProvider } from '../Feature/home/song.context'
+import { useEffect } from 'react'
+import { fetchCurrentUser } from '../Feature/auth/auth.slice'
+import { useDispatch } from 'react-redux'
 
 function App() {
+  const dispatch = useDispatch();
+  useEffect(() => {
+          dispatch(fetchCurrentUser());
+      },[]);
   return (
-    <AuthProvider>
       <SongContextProvider>
     <RouterProvider router={router} />
       </SongContextProvider>
-    </AuthProvider>
+    
   )
 }
 

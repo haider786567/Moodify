@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router'
 
 const Login = () => {
 
-    const { loading, handleLogin, err } = useAuth();
+    const {  login, err } = useAuth();
 
     const navigate = useNavigate();
 
@@ -16,7 +16,7 @@ const Login = () => {
 
     async function handleSubmit(e) {
         e.preventDefault();
-        const success = await handleLogin({ email, password });
+        const success = await login({ email, password });
         if (success) {
             navigate("/");
         }

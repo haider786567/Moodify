@@ -2,12 +2,12 @@ import React from "react"
 import { useAuth } from "../../auth/hook/useAuth"
 
 const Logout = () => {
-const { handleLogout, loading } = useAuth()
+const { logout, loading } = useAuth()
 
 return (
     <button
     className="button"
-    onClick={handleLogout}
+    onClick={logout}
     disabled={loading}
     style={{ marginBottom: "1rem" }}
     >
