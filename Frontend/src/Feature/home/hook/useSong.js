@@ -1,17 +1,17 @@
-import { useContext } from "react";
-import { SongContext } from "../song.context";
-import { getSong } from "../service/song.api";
-export const useSong = ()=>{
-    const context = useContext(SongContext)
-    const {loading ,setloading,song,setsong}= context
+import { useDispatch } from "react-redux";
+import { fetchSong } from "../song.slice";
 
-    async function HandleGetSong({mood}){
-        setloading(true)
-        const data = await getSong({mood})
-        setsong(data.song)
-        setloading(false)
-    }
-    return (
-        {loading,song,HandleGetSong}
-    )
-}
+    export const useSong = () => {
+    const dispatch = useDispatch();
+
+
+    const handleGetSong = async (data) => {
+        // Dispatch the action to fetch the song
+        dispatch(fetchSong({ mood: data.mood }));
+    };
+
+
+    return {
+        handleGetSong
+    };
+    };

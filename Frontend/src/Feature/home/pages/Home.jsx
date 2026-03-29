@@ -5,12 +5,12 @@ import Player from "../component/Player.jsx"
 import Logout from "../component/Logout.jsx"
 
 const Home = () => {
-    const { HandleGetSong } = useSong()
+    const { handleGetSong } = useSong()
     return (
         <>
             <Logout />
             <FaceExpression 
-                onClick={(expression) => { HandleGetSong({ mood: expression }) }}/>
+                onClick={(expression) => { handleGetSong({ mood: expression }) }}/>
             <Player />
 
         </>

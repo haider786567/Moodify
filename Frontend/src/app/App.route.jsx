@@ -13,6 +13,7 @@ export const router = createBrowserRouter([
     {
         path:"/",
         element: <Protected><Home/></Protected>
+        // element: <Protected><Home/></Protected>
 
     },
     {

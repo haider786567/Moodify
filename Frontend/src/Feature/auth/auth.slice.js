@@ -30,6 +30,8 @@ export const fetchCurrentUser = createAsyncThunk(
     async (_, { rejectWithValue }) => {
         try {
             const response = await getMe();
+            // console.log(response);
+            
             return response.user;
         } catch (error) {
             return rejectWithValue(error.response.data.message);
@@ -54,7 +56,8 @@ const authAlice = createSlice({
         user: null,
         loading: false,
         err: null,
-        isAuthenticated: false
+        isAuthenticated: false,
+        authChecked: false
     },
     reducers: {},
     extraReducers: (builder) => {
@@ -67,10 +70,12 @@ const authAlice = createSlice({
                 state.loading = false;
                 state.user = action.payload;
                 state.isAuthenticated = true;
+                state.authChecked = true;
             })
             .addCase(loginUser.rejected, (state, action) => {
                 state.loading = false;
                 state.err = action.payload;
+                state.authChecked = true;
             })
             .addCase(registerUser.pending, (state) => {
                 state.loading = true;
@@ -80,24 +85,29 @@ const authAlice = createSlice({
                 state.loading = false;
                 state.user = action.payload;
                 state.isAuthenticated = true;
+                state.authChecked = true;   
             })
             .addCase(registerUser.rejected, (state, action) => {
                 state.loading = false;
                 state.err = action.payload;
+                state.authChecked = true;
             })
             .addCase(fetchCurrentUser.pending, (state) => {
                 state.loading = true;
                 state.err = null;
+                state.authChecked = false;
             })
             .addCase(fetchCurrentUser.fulfilled, (state, action) => {
                 state.loading = false;
                 state.user = action.payload;
                 state.isAuthenticated = true;
+                state.authChecked = true;
             })
             .addCase(fetchCurrentUser.rejected, (state) => {
                 state.loading = false;
                 state.user = null;
                 state.isAuthenticated = false;
+                state.authChecked = true;
 })
             .addCase(logoutUser.pending, (state) => {
                 state.loading = true;
@@ -107,14 +117,16 @@ const authAlice = createSlice({
                 state.loading = false;
                 state.user = null;
                 state.isAuthenticated = false;
+                state.authChecked = true;
+
             })
             .addCase(logoutUser.rejected, (state, action) => {
                 state.loading = false;
                 state.err = action.payload;
                 state.isAuthenticated = false;
+                state.authChecked = true;
 
             });        
     }
 });
-export const { setUser, setLoading, seterr } = authAlice.actions
 export default authAlice.reducer

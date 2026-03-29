@@ -1,7 +1,7 @@
-import React, { useRef, useState, useEffect, useContext } from 'react'
-import { SongContext } from '../song.context'
-import { useSong } from '../hook/useSong'
+import React, { useRef, useState, useEffect } from 'react'
+import { useSelector } from 'react-redux'
 import './player.scss'
+
 
 const SPEED_OPTIONS = [0.5, 0.75, 1, 1.25, 1.5, 2]
 
@@ -13,7 +13,7 @@ const formatTime = (seconds) => {
 }
 
 const Player = () => {
-    const { song } = useSong()
+    const { song } = useSelector((state) => state.song)
 
     const audioRef = useRef(null)
     const progressRef = useRef(null)
@@ -26,24 +26,64 @@ const Player = () => {
     const [showSpeed, setShowSpeed] = useState(false)
     const [isMuted, setIsMuted] = useState(false)
 
-    // Reset player when song changes
     useEffect(() => {
-        if (audioRef.current) {
-            audioRef.current.load()
-            setIsPlaying(false)
-            setCurrentTime(0)
+        const audio = audioRef.current
+        if (!audio || !song?.url) return
+
+        let cancelled = false
+
+        setIsPlaying(false)
+        setCurrentTime(0)
+        setDuration(0)
+
+        const startPlayback = async () => {
+            try {
+                await audio.play()
+                if (!cancelled) {
+                    setIsPlaying(true)
+                }
+            } catch (error) {
+                if (!cancelled) {
+                    setIsPlaying(false)
+                }
+                console.error('Unable to start audio playback:', error)
+            }
+        }
+
+        const handleCanPlay = () => {
+            audio.removeEventListener('canplay', handleCanPlay)
+            if (!cancelled) {
+                startPlayback()
+            }
+        }
+
+        audio.pause()
+        audio.currentTime = 0
+        audio.load()
+        audio.addEventListener('canplay', handleCanPlay)
+
+        return () => {
+            cancelled = true
+            audio.removeEventListener('canplay', handleCanPlay)
         }
     }, [song?.url])
 
-    const togglePlay = () => {
+    const togglePlay = async () => {
         const audio = audioRef.current
         if (!audio) return
-        if (isPlaying) {
-            audio.pause()
+
+        if (audio.paused) {
+            try {
+                await audio.play()
+                setIsPlaying(true)
+            } catch (error) {
+                setIsPlaying(false)
+                console.error('Unable to resume audio playback:', error)
+            }
         } else {
-            audio.play()
+            audio.pause()
+            setIsPlaying(false)
         }
-        setIsPlaying(!isPlaying)
     }
 
     const skip = (secs) => {
@@ -58,6 +98,14 @@ const Player = () => {
 
     const handleLoadedMetadata = () => {
         setDuration(audioRef.current.duration)
+    }
+
+    const handlePause = () => {
+        setIsPlaying(false)
+    }
+
+    const handlePlay = () => {
+        setIsPlaying(true)
     }
 
     const handleProgressClick = (e) => {
@@ -105,10 +153,14 @@ const Player = () => {
     return (
         <div className="player">
             <audio
+                key={song.url}
                 ref={audioRef}
                 src={song.url}
+                preload="auto"
                 onTimeUpdate={handleTimeUpdate}
                 onLoadedMetadata={handleLoadedMetadata}
+                onPause={handlePause}
+                onPlay={handlePlay}
                 onEnded={handleSongEnd}
             />
 
@@ -116,7 +168,7 @@ const Player = () => {
             <div className="player__info">
                 <img
                     className="player__poster"
-                    src={song.posterUrl}
+                    src={song.posterurl}
                     alt={song.title}
                 />
                 <div className="player__meta">

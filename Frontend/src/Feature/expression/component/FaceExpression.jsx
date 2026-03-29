@@ -1,11 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import { detect, init } from "../utils/utils";
+import { useDispatch } from "react-redux";
+import { fetchSong } from "../../home/song.slice";
 
 
 export default function FaceExpression({ onClick = () => { } }) {
     const videoRef = useRef(null);
     const landmarkerRef = useRef(null);
     const streamRef = useRef(null);
+    const dispatch = useDispatch();
 
     const [ expression, setExpression ] = useState("Detecting...");
 
@@ -26,9 +29,9 @@ export default function FaceExpression({ onClick = () => { } }) {
     }, []);
 
     async function handleClick() {
-        const expression = detect({ landmarkerRef, videoRef, setExpression })
-        console.log(expression)
-        onClick(expression)
+        const expression = await detect({ landmarkerRef, videoRef, setExpression })
+        
+        onClick(expression);
     }
 
 
