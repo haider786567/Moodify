@@ -1,0 +1,111 @@
+.scanner-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    width: 100%;
+}
+
+.video-frame {
+    position: relative;
+    width: 100%;
+    max-width: 350px;
+    border-radius: 16px;
+    padding: 10px; // space for corners
+    background: rgba(138, 43, 226, 0.05);
+
+    video {
+        width: 100%;
+        border-radius: 12px;
+        filter: grayscale(20%) contrast(1.1); // subtle cool effect
+        transform: scaleX(-1); // Mirror for webcam
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+    }
+
+    // Sci-fi corners
+    .corner {
+        position: absolute;
+        width: 30px;
+        height: 30px;
+        border: 2px solid var(--accent-secondary);
+        z-index: 5;
+        opacity: 0.6;
+    }
+    .top-left { top: 0; left: 0; border-right: none; border-bottom: none; border-radius: 16px 0 0 0; }
+    .top-right { top: 0; right: 0; border-left: none; border-bottom: none; border-radius: 0 16px 0 0; }
+    .bottom-left { bottom: 0; left: 0; border-right: none; border-top: none; border-radius: 0 0 0 16px; }
+    .bottom-right { bottom: 0; right: 0; border-left: none; border-top: none; border-radius: 0 0 16px 0; }
+
+    &.scanning {
+        .corner {
+            opacity: 1;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 10px var(--accent-primary);
+        }
+        
+        .scan-line {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            width: calc(100% - 20px);
+            height: 2px;
+            background: var(--accent-secondary);
+            box-shadow: 0 0 8px 2px var(--accent-secondary);
+            z-index: 10;
+            animation: scanAnim 1.5s ease-in-out infinite alternate;
+        }
+    }
+}
+
+.scanner-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+    
+    .mood-badge {
+        font-size: 1.1rem;
+        background: rgba(0, 0, 0, 0.4);
+        padding: 0.5rem 1.25rem;
+        border-radius: 20px;
+        border: 1px solid var(--glass-border);
+        color: var(--text-secondary);
+        
+        .highlight-mood {
+            color: var(--text-primary);
+            font-weight: 700;
+            margin-left: 0.5rem;
+            text-transform: capitalize;
+        }
+    }
+
+    .btn-detect {
+        background: var(--accent-gradient);
+        color: white;
+        border: none;
+        padding: 0.8rem 2rem;
+        border-radius: 30px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: 0 5px 15px rgba(138, 43, 226, 0.2);
+
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(138, 43, 226, 0.5);
+        }
+
+        &.processing {
+            background: rgba(138, 43, 226, 0.5);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+    }
+}
+
+@keyframes scanAnim {
+    0% { top: 10px; }
+    100% { top: calc(100% - 10px); }
+}

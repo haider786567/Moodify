@@ -3,18 +3,37 @@ import Register from "../Feature/auth/pages/Register"
 import Login from "../Feature/auth/pages/Login"
 import Protected from "../Feature/auth/component/Protected"
 import Home from "../Feature/home/pages/Home"
-
+import Landing from "../Feature/home/pages/Landing"
+import AppLayout from "../Feature/Shared/component/AppLayout"
+import Playlist from "../Feature/Playlist/Playlist"
+import History from "../Feature/history/History"
 
 export const router = createBrowserRouter([
     {
-        path: "/register",
-        element: <Register />
+        path: "/",
+        element: <Landing />
     },
     {
-        path:"/",
-        element: <Protected><Home/></Protected>
-        // element: <Protected><Home/></Protected>
-
+        path: "/app",
+        element: <Protected><AppLayout /></Protected>,
+        children: [
+            {
+                index: true,
+                element: <Home />
+            },
+            {
+                path: "playlist",
+                element: <Playlist />
+            },
+            {
+                path: "history",
+                element: <History />
+            }
+        ]
+    },
+    {
+        path: "/register",
+        element: <Register />
     },
     {
         path: "/login",

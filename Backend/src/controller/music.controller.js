@@ -1,28 +1,35 @@
 const getSong = require("../service/yt.service")
-const getMoodQuery = require("../utils/moodquery")
+const getMoodQuery = require("../utils/moodquery.js")
 const historyModel = require("../model/history.model");
 const favoriteModel = require("../model/fav.model");
 async function getSongsByMood(req, res) {
-    const { mood } = req.params
+    const {mood} = req.query
     console.log(mood);
     
-    const query = getMoodQuery[mood]
+    const query = getMoodQuery(mood)
     if (!query) {
         return res.status(400).json({ error: "Invalid mood" })
     }
     try {
         const songs = await getSong(query)
+
+        console.log(songs);
+        
+        
+        
         const randomIndex = Math.floor(Math.random() * songs.length)
         const selectedSong = songs[randomIndex]
+        // console.log(selectedSong);
+        
+        
         const history  = await historyModel.create({
             userId: req.user.id,
             videoId: selectedSong.videoId,
             title: selectedSong.title,
             mood
         })
-        console.log(selectedSong);
         console.log(history);
-        res.json(selectedSong)
+        res.status(200).json(selectedSong)
     } catch (error) {
         console.error("Error fetching songs:", error)
         res.status(500).json({ error: "Failed to fetch songs" })
@@ -35,7 +42,7 @@ async function history(req,res){
     if(!history){
         return res.status(404).json({error:"No history found"})
     }
-    res.json(history)
+    res.status(200).json(history)
 }
 async function CreatePlaylist(req,res){
     const {name} = req.body
@@ -47,7 +54,7 @@ async function CreatePlaylist(req,res){
         name,
         userId
     })
-    res.json(playlist)
+    res.status(201).json(playlist)
 }
 async function AddToPlaylist(req,res){
     const id = req.params.id
@@ -58,12 +65,12 @@ async function AddToPlaylist(req,res){
     }
     playlist.songs.push({videoId,title,thumbnail,channel})
     await playlist.save()
-    res.json(playlist)
+    res.status(200).json(playlist)
 }
 async function GetPlaylist(req,res){
     const userId = req.user.id
     const playlists = await playlistModel.find({userId})
-    res.json(playlists)
+    res.status(200).json(playlists)
 }
 async function DeletePlaylist(req,res){
     const id = req.params.id
@@ -71,7 +78,7 @@ async function DeletePlaylist(req,res){
     if(!playlist){
         return res.status(404).json({error:"Playlist not found"})
     }
-    res.json({message:"Playlist deleted"})
+    res.status(200).json({message:"Playlist deleted"})
 }
 async function RemoveFromPlaylist(req,res){
     const id = req.params.id
@@ -82,7 +89,7 @@ async function RemoveFromPlaylist(req,res){
     }
     playlist.songs = playlist.songs.filter(song => song.videoId !== videoId)
     await playlist.save()
-    res.json(playlist)
+    res.status(200).json(playlist)
 }
 async function addToFav(req,res){
     const {videoId,title,thumbnail} = req.body

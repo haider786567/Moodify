@@ -5,14 +5,14 @@ const Logout = () => {
 const { logout, loading } = useAuth()
 
 return (
-    <button
-    className="button"
-    onClick={logout}
-    disabled={loading}
-    style={{ marginBottom: "1rem" }}
+    <div 
+        className="nav-item" 
+        onClick={logout} 
+        style={{ cursor: 'pointer' }}
     >
-    {loading ? "Logging out..." : "Logout"}
-    </button>
+        <span className="icon">🚪</span>
+        <span className="label">{loading ? "Logging out..." : "Logout"}</span>
+    </div>
 )
 }
 

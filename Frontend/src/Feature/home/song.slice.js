@@ -6,7 +6,9 @@ export const fetchSong = createAsyncThunk(
     async ({mood},{rejectWithValue})=>{
         try{
             const response = await getSong({mood})
-            return response.song
+            console.log(response);
+            
+            return response
         } catch (error) {
             return rejectWithValue(error.response.data.message)
         }
@@ -15,7 +17,9 @@ export const fetchSong = createAsyncThunk(
 const songSlice = createSlice({
     name:"song",
     initialState:{
-        song:null,
+        videoId:null,
+        thumbnail:null,
+        title:null,
         loading:false,
         error:null
     },
@@ -27,7 +31,10 @@ const songSlice = createSlice({
         })
         builder.addCase(fetchSong.fulfilled,(state,action)=>{
             state.loading = false
-            state.song = action.payload
+            state.videoId = action.payload.videoId
+            state.thumbnail = action.payload.thumbnail
+            state.title = action.payload.title
+            state.duration = action.payload.duration
         })
         builder.addCase(fetchSong.rejected,(state,action)=>{
             state.loading = false

@@ -1,16 +1,14 @@
 import { useEffect, useRef, useState } from "react";
 import { detect, init } from "../utils/utils";
-import { useDispatch } from "react-redux";
-import { fetchSong } from "../../home/song.slice";
+import './face-expression.scss';
 
-
-export default function FaceExpression({ onClick = () => { } }) {
+export default function FaceExpression({ onClick = () => {} }) {
     const videoRef = useRef(null);
     const landmarkerRef = useRef(null);
     const streamRef = useRef(null);
-    const dispatch = useDispatch();
-
-    const [ expression, setExpression ] = useState("Detecting...");
+    
+    const [expression, setExpression] = useState("Detecting...");
+    const [isDetecting, setIsDetecting] = useState(false);
 
     useEffect(() => {
         init({ landmarkerRef, videoRef, streamRef });
@@ -29,21 +27,49 @@ export default function FaceExpression({ onClick = () => { } }) {
     }, []);
 
     async function handleClick() {
-        const expression = await detect({ landmarkerRef, videoRef, setExpression })
-        
-        onClick(expression);
+        setIsDetecting(true);
+        // Simulate a tiny delay for visual "scanning" effect
+        setTimeout(async () => {
+            const exp = await detect({ landmarkerRef, videoRef, setExpression });
+            setIsDetecting(false);
+            onClick(exp);
+        }, 800);
     }
 
-
     return (
-        <div style={{ textAlign: "center" }}>
-            <video
-                ref={videoRef}
-                style={{ width: "400px", borderRadius: "12px" }}
-                playsInline
-            />
-            <h2>{expression}</h2>
-            <button onClick={handleClick} >Detect expression</button>
+        <div className="scanner-container">
+            <div className={`video-frame ${isDetecting ? 'scanning' : ''}`}>
+                {/* Visual sci-fi scanner corners */}
+                <div className="corner top-left"></div>
+                <div className="corner top-right"></div>
+                <div className="corner bottom-left"></div>
+                <div className="corner bottom-right"></div>
+                
+                {/* The actual video feed */}
+                <video
+                    ref={videoRef}
+                    playsInline
+                    autoPlay
+                    muted
+                />
+                
+                {/* Overlay Scanning Line */}
+                {isDetecting && <div className="scan-line"></div>}
+            </div>
+            
+            <div className="scanner-info">
+                <div className="mood-badge">
+                    Current Mood: <span className="highlight-mood">{expression}</span>
+                </div>
+                
+                <button 
+                    className={`btn-detect ${isDetecting ? 'processing' : ''}`}
+                    onClick={handleClick}
+                    disabled={isDetecting}
+                >
+                    {isDetecting ? 'Analyzing...' : 'Detect Expression'}
+                </button>
+            </div>
         </div>
     );
 }

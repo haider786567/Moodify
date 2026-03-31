@@ -1,0 +1,88 @@
+.dashboard-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    
+    .dashboard-header {
+        .greeting h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .greeting p {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+    }
+    
+    .dashboard-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 2rem;
+        flex: 1;
+        
+        @media (min-width: 1024px) {
+            grid-template-columns: 1.2fr 0.8fr;
+        }
+        
+        .dashboard-panel {
+            display: flex;
+            flex-direction: column;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            
+            .panel-header {
+                padding: 1.25rem 1.5rem;
+                border-bottom: 1px solid var(--glass-border);
+                background: rgba(0, 0, 0, 0.2);
+                
+                h3 {
+                    font-size: 1.1rem;
+                    display: flex;
+                    align-items: center;
+                    gap: 0.75rem;
+                    color: var(--text-primary);
+                    
+                    .icon {
+                        font-size: 1.25rem;
+                    }
+                }
+            }
+            
+            .panel-content {
+                flex: 1;
+                padding: 1.5rem;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                position: relative;
+            }
+        }
+        
+        .scanner-panel {
+            .scanner-wrapper {
+                background: rgba(0, 0, 0, 0.3);
+                border-radius: 12px;
+                padding: 1rem;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+            }
+        }
+        
+        .player-panel {
+            .player-wrapper {
+                width: 100%;
+            }
+        }
+    }
+}

@@ -1,12 +1,16 @@
 import React from 'react'
 
-function Formgroup({label,placeholder,value,onChange}) {
+function Formgroup({ label, placeholder, value, onChange, type = "text" }) {
 return (
     <div className='form-group'>
         <label htmlFor={label}>{label}</label>
-        <input type="text" name={label} placeholder={placeholder} value={value} onChange={onChange}/>
-
-    
+        <input 
+            type={type} 
+            name={label} 
+            placeholder={placeholder} 
+            value={value} 
+            onChange={onChange}
+        />
     </div>
 )
 }
