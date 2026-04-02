@@ -22,13 +22,26 @@ async function getSongsByMood(req, res) {
         // console.log(selectedSong);
         
         
-        const history  = await historyModel.create({
-            userId: req.user.id,
-            videoId: selectedSong.videoId,
-            title: selectedSong.title,
-            thumbnail: selectedSong.thumbnail,
-            mood
-        })
+        const history = await historyModel.findOneAndUpdate(
+    {
+        userId: req.user.id,
+        videoId: selectedSong.videoId
+    },
+    {
+        $set: {
+        playedAt: new Date(),
+        mood
+        },
+        $setOnInsert: {
+        title: selectedSong.title,
+        thumbnail: selectedSong.thumbnail
+        }
+    },
+    {
+        upsert: true,
+        new: true
+    }
+)
         console.log(history);
         res.status(200).json(selectedSong)
     } catch (error) {

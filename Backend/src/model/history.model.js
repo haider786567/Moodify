@@ -21,4 +21,5 @@ const historySchema = new mongoose.Schema({
     }
 )
 const historyModel = mongoose.model("History",historySchema)
+historySchema.index({ userId: 1, videoId: 1 }, { unique: true })
 module.exports = historyModel

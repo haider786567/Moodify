@@ -11,12 +11,6 @@ const Music = () => {
     
     const videoId = currentSong ? currentSong.videoId : null
     const title = currentSong ? currentSong.title : "Loading..."
-    useEffect(() => {
-    if (videoId && playerRef.current) {
-        playerRef.current.loadVideoById(videoId)
-        playerRef.current.playVideo()
-    }
-    }, [videoId])
     
     
 
@@ -39,7 +33,7 @@ const Music = () => {
             new window.YT.Player("yt-player", {
                 height: "0",
                 width: "0",
-                videoId: videoId,
+                // videoId: videoId,
                 playerVars: {
                     autoplay: 1,
                     controls: 0,
@@ -47,12 +41,18 @@ const Music = () => {
                 },
                 events: {
                     onReady: (event) => {
-                        console.log("READY ✅")
-                        playerRef.current = event.target
-                        setIsReady(true)
-                        event.target.playVideo()
-                        setIsPlaying(true)
-                    },
+                                console.log("READY ✅")
+
+                                playerRef.current = event.target
+                                setIsReady(true)
+
+                                // 🔥 CRITICAL FIX
+                                if (videoId) {
+                                    event.target.loadVideoById(videoId)
+                                    event.target.playVideo()
+                                    setIsPlaying(true)
+                                }
+                                },
                     onStateChange: (event) => {
                         // 1 = playing, 2 = paused, 0 = ended
                         if (event.data === window.YT.PlayerState.PLAYING) {
@@ -78,13 +78,14 @@ const Music = () => {
 
     // Change video safely
     useEffect(() => {
-        if (isReady && playerRef.current && videoId) {
-            playerRef.current.loadVideoById(videoId)
-            playerRef.current.unMute()
-            playerRef.current.playVideo()
-            setIsPlaying(true)
-        }
-    }, [videoId, isReady])
+  if (!isReady || !playerRef.current || !videoId) return
+
+  playerRef.current.loadVideoById(videoId)
+  playerRef.current.unMute()
+  playerRef.current.playVideo()
+
+  setIsPlaying(true)
+}, [videoId, isReady])
 
     // Progress tracking
     useEffect(() => {
