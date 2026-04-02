@@ -1,13 +1,14 @@
 import { createSlice,createAsyncThunk } from "@reduxjs/toolkit";
 import { getSong } from "./service/song.api.js";
 
+
+
+
 export const fetchSong = createAsyncThunk(
     "/songs/fetchsong",
     async ({mood},{rejectWithValue})=>{
         try{
             const response = await getSong({mood})
-            console.log(response);
-            
             return response
         } catch (error) {
             return rejectWithValue(error.response.data.message)

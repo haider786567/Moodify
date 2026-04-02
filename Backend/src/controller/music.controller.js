@@ -26,6 +26,7 @@ async function getSongsByMood(req, res) {
             userId: req.user.id,
             videoId: selectedSong.videoId,
             title: selectedSong.title,
+            thumbnail: selectedSong.thumbnail,
             mood
         })
         console.log(history);

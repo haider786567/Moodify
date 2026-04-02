@@ -2,8 +2,26 @@ import React, { useEffect, useRef, useState } from "react"
 import { useSelector } from "react-redux"
 import "./music.scss"
 
+
+
 const Music = () => {
-    const { videoId, title } = useSelector((state) => state.song)
+    
+
+    const currentSong = useSelector((state) => state.player.currentSong)
+    
+    const videoId = currentSong ? currentSong.videoId : null
+    const title = currentSong ? currentSong.title : "Loading..."
+    useEffect(() => {
+    if (videoId && playerRef.current) {
+        playerRef.current.loadVideoById(videoId)
+        playerRef.current.playVideo()
+    }
+    }, [videoId])
+    
+    
+
+    
+    
 
     const playerRef = useRef(null)
     const intervalRef = useRef(null)
@@ -16,7 +34,7 @@ const Music = () => {
     // Load YouTube API
     useEffect(() => {
         const initPlayer = () => {
-            if (!window.YT || !window.YT.Player || !videoId) return
+            if (!window.YT || !window.YT.Player ) return
 
             new window.YT.Player("yt-player", {
                 height: "0",

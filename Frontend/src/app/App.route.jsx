@@ -5,8 +5,8 @@ import Protected from "../Feature/auth/component/Protected"
 import Home from "../Feature/home/pages/Home"
 import Landing from "../Feature/home/pages/Landing"
 import AppLayout from "../Feature/Shared/component/AppLayout"
-import Playlist from "../Feature/Playlist/Playlist"
-import History from "../Feature/history/History"
+import Playlist from "../Feature/Playlist/pages/Playlist"
+import History from "../Feature/history/pages/History"
 
 export const router = createBrowserRouter([
     {

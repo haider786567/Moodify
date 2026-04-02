@@ -11,6 +11,7 @@ const historySchema = new mongoose.Schema({
     title: String,
 
     mood: String,
+    thumbnail: String,
 
     playedAt: {
         type: Date,

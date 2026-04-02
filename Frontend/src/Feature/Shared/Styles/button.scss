@@ -1,4 +1,4 @@
-.button{
+@mixin button-style {
     background-color: #dd4200; /* Green */
     border: none;
     color: white;
@@ -9,8 +9,6 @@
     display: inline-block;
     outline: none;
     font-size: 16px;
-
     border-radius: 0.5rem;
-
     cursor: pointer;
 }
