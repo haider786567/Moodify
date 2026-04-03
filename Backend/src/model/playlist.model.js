@@ -15,7 +15,7 @@ const playlistSchema = new mongoose.Schema({
         videoId: String,
         title: String,
         thumbnail: String,
-        channel: String
+        
     }],
 },{
     timestamps:true

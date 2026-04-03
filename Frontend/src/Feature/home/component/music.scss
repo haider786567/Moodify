@@ -55,6 +55,14 @@
   margin-bottom: 20px;
   width: 100%;
   
+  .song-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    gap: 0.5rem;
+  }
+  
   .song-title {
     font-size: 1.3rem;
     font-weight: 700;
@@ -62,6 +70,78 @@
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    max-width: 80%;
+  }
+
+  .playlist-menu-container {
+    position: absolute;
+    right: 0;
+
+    .context-menu-btn {
+      background: none;
+      border: none;
+      color: var(--text-secondary);
+      font-size: 1.5rem;
+      cursor: pointer;
+      padding: 0 0.5rem;
+      transition: color 0.2s;
+
+      &:hover {
+        color: var(--text-primary);
+      }
+    }
+
+    .playlist-dropdown {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      margin-top: 0.5rem;
+      width: 220px;
+      background: rgba(20, 20, 30, 0.95);
+      border: 1px solid var(--glass-border);
+      border-radius: 12px;
+      padding: 1rem;
+      z-index: 10;
+      text-align: left;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(10px);
+      
+      h4 {
+        font-size: 0.9rem;
+        color: var(--text-secondary);
+        margin-bottom: 0.75rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        padding-bottom: 0.5rem;
+      }
+
+      .playlist-options {
+        list-style: none;
+        padding: 0;
+        margin: 0 0 1rem 0;
+        max-height: 120px;
+        overflow-y: auto;
+
+        li {
+          padding: 0.5rem;
+          font-size: 0.9rem;
+          cursor: pointer;
+          border-radius: 6px;
+          transition: background 0.2s;
+
+          &:hover {
+            background: rgba(255, 255, 255, 0.1);
+          }
+        }
+      }
+
+      .empty-msg {
+        font-size: 0.85rem;
+        color: var(--text-secondary);
+        margin-bottom: 1rem;
+        font-style: italic;
+      }
+
+    }
   }
   
   .song-artist {

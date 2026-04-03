@@ -2,6 +2,7 @@ const getSong = require("../service/yt.service")
 const getMoodQuery = require("../utils/moodquery.js")
 const historyModel = require("../model/history.model");
 const favoriteModel = require("../model/fav.model");
+const playlistModel = require("../model/playlist.model")
 async function getSongsByMood(req, res) {
     const {mood} = req.query
     console.log(mood);
@@ -61,49 +62,109 @@ async function history(req,res){
 async function CreatePlaylist(req,res){
     const {name} = req.body
     const userId = req.user.id
-    if(!name){
-        return res.status(400).json({error:"Playlist name is required"})
-    }
     const playlist = await playlistModel.create({
         name,
-        userId
+        userId,
+        songs:[]
     })
     res.status(201).json(playlist)
-}
-async function AddToPlaylist(req,res){
-    const id = req.params.id
-    const {videoId,title,thumbnail,channel} = req.body
-    const playlist = await playlistModel.findById(id)
-    if(!playlist){
-        return res.status(404).json({error:"Playlist not found"})
-    }
-    playlist.songs.push({videoId,title,thumbnail,channel})
-    await playlist.save()
-    res.status(200).json(playlist)
 }
 async function GetPlaylist(req,res){
     const userId = req.user.id
     const playlists = await playlistModel.find({userId})
     res.status(200).json(playlists)
 }
-async function DeletePlaylist(req,res){
-    const id = req.params.id
-    const playlist = await playlistModel.findByIdAndDelete(id)
+async function GetSinglePlaylist(req,res){
+    const {playlistId} = req.params
+    const playlist = await playlistModel.findById(playlistId)
     if(!playlist){
         return res.status(404).json({error:"Playlist not found"})
     }
-    res.status(200).json({message:"Playlist deleted"})
-}
-async function RemoveFromPlaylist(req,res){
-    const id = req.params.id
-    const {videoId} = req.body
-    const playlist = await playlistModel.findById(id)
-    if(!playlist){
-        return res.status(404).json({error:"Playlist not found"})
-    }
-    playlist.songs = playlist.songs.filter(song => song.videoId !== videoId)
-    await playlist.save()
     res.status(200).json(playlist)
+}
+async function UpdatePLaylist(req,res){
+    const {playlistId} = req.params
+    const {name} = req.body
+    const playlist = await playlistModel.findByIdAndUpdate(playlistId,{name},{new:true})
+    if(!playlist){
+        return res.status(404).json({error:"Playlist not found"})
+    }
+    res.status(200).json(playlist)
+}
+async function DeletePlaylist(req,res){
+    const {playlistId} = req.params
+    const playlist = await playlistModel.findByIdAndDelete(playlistId)
+    if(!playlist){
+        return res.status(404).json({error:"Playlist not found"})
+    }
+    res.status(200).json({message:"Playlist deleted successfully"})
+}
+async function AddToPlaylist(req,res){
+    try {
+        const { playlistId } = req.params;
+        const {videoId} = req.body
+
+        if (!videoId) {
+            return res.status(400).json({
+                error: "videoId is required"
+            });
+        }
+
+        const playlist = await playlistModel.findOneAndUpdate(
+            {
+                _id: playlistId,
+                userId: req.user.id
+            },
+            {
+                $addToSet: { songs: { videoId } }
+            },
+            { new: true }
+        );
+
+        if (!playlist) {
+            return res.status(404).json({
+                error: "Playlist not found or unauthorized"
+            });
+        }
+
+        res.status(200).json(playlist);
+
+    } catch (err) {
+        res.status(500).json({ error: "Server error" });
+    }
+}
+async function RemoveFromPlaylist(req, res) {
+  try {
+    const { playlistId, videoId } = req.params;
+
+    if (!videoId) {
+      return res.status(400).json({
+        error: "videoId is required"
+      });
+    }
+
+    const playlist = await playlistModel.findOneAndUpdate(
+      {
+        _id: playlistId,
+        userId: req.user.id
+      },
+      {
+        $pull: { songs: { videoId } }
+      },
+      { new: true }
+    );
+
+    if (!playlist) {
+      return res.status(404).json({
+        error: "Playlist not found or unauthorized"
+      });
+    }
+
+    res.status(200).json(playlist);
+
+  } catch (err) {
+    res.status(500).json({ error: "Server error" });
+  }
 }
 async function addToFav(req,res){
     const {videoId,title,thumbnail} = req.body
@@ -118,4 +179,4 @@ async function addToFav(req,res){
 }
 
 
-module.exports = {getSongsByMood,history,CreatePlaylist,AddToPlaylist,GetPlaylist,DeletePlaylist,RemoveFromPlaylist,addToFav}
+module.exports = {getSongsByMood,history,CreatePlaylist,AddToPlaylist,GetPlaylist,DeletePlaylist,RemoveFromPlaylist,GetSinglePlaylist,addToFav,UpdatePLaylist}
